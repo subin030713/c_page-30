@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Share Yours — 우여곡절 아카이브</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ── Part A 전용 ── */
+  .part-a-page {
+    position: absolute;
+    inset: 0;
+    width: 1920px;
+    height: 1200px;
+    background: #FFFFFF;
+    overflow: hidden;
+  }
+
+  /* 텍스트 + 비디오 묶음 → 클릭하면 폼으로 */
+  .part-a-link {
+    position: absolute;
+    top: 224px;
+    left: 421px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    cursor: none;
+    z-index: 5;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .part-a-text {
+    width: 468px;
+    height: 144px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'OnulGongHanChe', serif;
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 40px;
+    color: #000;
+    text-align: center;
+    white-space: pre-line;
+    transition: opacity 0.3s ease;
+  }
+
+  .part-a-link:hover .part-a-text {
+    opacity: 0.6;
+  }
+
+  .part-a-video-wrap {
+    width: 938px;
+    height: 555px;
+    border: 1px solid #000;
+    box-shadow: 2px 4px 2px 3px rgba(0,0,0,0.12);
+    overflow: hidden;
+    position: relative;
+    transition: filter 0.4s ease, transform 0.4s ease;
+  }
+
+  .part-a-link:hover .part-a-video-wrap {
+    filter: brightness(1.08);
+    transform: scale(1.01);
+  }
+
+  .part-a-link:active .part-a-video-wrap {
+    filter: brightness(1.2);
+    transform: scale(0.99);
+  }
+
+  .part-a-video-wrap video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* 왼쪽 위 랜딩 복귀 알 */
+  .part-a-home {
+    position: absolute;
+    top: 977px;
+    left: -17px;
+    width: 334px;
+    height: 223px;
+    z-index: 10;
+    display: block;
+    cursor: none;
+  }
+  .part-a-home img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+  .part-a-home:hover img {
+    transform: scale(1.05);
+  }
+  .part-a-home[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: -32px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'OnulGongHanChe', serif;
+    font-weight: 500;
+    font-size: 16px;
+    color: #000;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<img id="cursor" src="images/custom_cursor.png" alt="">
+<div id="trail-layer"></div>
+<div id="quote-bubble">
+  <div class="quote-text" id="quote-text"></div>
+  <div class="quote-attr" id="quote-attr"></div>
+</div>
+
+<div class="scale-wrapper" id="scale-wrapper">
+  <section class="part-a-page page active">
+
+    <img src="images/egg_background.png" class="egg-bg" alt="">
+
+    <!-- 텍스트 + 비디오 → 클릭 시 구글폼 -->
+    <a class="part-a-link"
+       href="https://docs.google.com/forms/d/e/1FAIpQLScA-qIFWLHdFGLe7fFXMkgN8Hr9mgmj3AfTWS3hZb3OIDwk4A/viewform?usp=header"
+       target="_blank">
+
+      <div class="part-a-text">Click to Share Yours&#10;우여곡절을 나눠주세요</div>
+
+      <div class="part-a-video-wrap">
+        <video autoplay loop muted playsinline>
+          <source src="images/short_animation.mp4" type="video/mp4">
+          <source src="images/short_animation.mov" type="video/quicktime">
+        </video>
+      </div>
+
+    </a>
+
+    <!-- 랜딩 복귀 알 -->
+    <a href="index.html" class="part-a-home" data-tooltip="Back to Home">
+      <img src="images/landingpage_button.png" alt="">
+    </a>
+
+  </section>
+</div>
+
+<script src="landing.js"></script>
+</body>
+</html>

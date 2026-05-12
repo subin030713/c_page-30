@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>곁눈질 — 우여곡절 아카이브</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<img id="cursor" src="images/custom_cursor.png" alt="">
+<div id="trail-layer"></div>
+<div id="quote-bubble">
+  <div class="quote-text" id="quote-text"></div>
+  <div class="quote-attr" id="quote-attr"></div>
+</div>
+
+
+<div class="scale-wrapper" id="scale-wrapper">
+
+  <!-- ═════════════════════════════════════════ -->
+  <!-- C - 시점 선택                                -->
+  <!-- ═════════════════════════════════════════ -->
+  <section id="stage-select" class="page active">
+
+    <img src="images/egg_background.png" class="egg-bg" alt="">
+
+    <!-- 홈 버튼 — 왼쪽 세로 중앙 고정 -->
+    <a href="index.html" class="landing-side landing-left" data-tooltip="Back to Home">
+      <img src="images/landingpage_button.png" alt="">
+    </a>
+
+    <div class="question">창작 작업 중<br>어느 단계에 계시나요?</div>
+
+    <div class="stages">
+      <div class="stage-item" data-stage="01">
+        <img src="images/stage_01.png" class="stage-img stage-01-size" alt="">
+        <div class="stage-label">stage 01 초반 아이디어 단계</div>
+      </div>
+      <div class="stage-item" data-stage="02">
+        <img src="images/stage_02.png" class="stage-img stage-02-size" alt="">
+        <div class="stage-label">stage 02 제작 진행 중</div>
+      </div>
+      <div class="stage-item" data-stage="03">
+        <img src="images/stage_03.png" class="stage-img stage-03-size" alt="">
+        <div class="stage-label">stage 03 마무리 직전</div>
+      </div>
+      <div class="stage-item" data-stage="04">
+        <img src="images/stage_04.png" class="stage-img stage-04-size" alt="">
+        <div class="stage-label">stage 04 공개 이후</div>
+      </div>
+      <div class="stage-item" data-stage="00">
+        <img src="images/stage_05.png" class="stage-img stage-05-size" alt="">
+        <div class="stage-label">stage 00 전범위</div>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- ═════════════════════════════════════════ -->
+  <!-- C - 사례 화면                                -->
+  <!-- ═════════════════════════════════════════ -->
+  <section id="case-view" class="page">
+
+    <img src="images/egg_background.png" class="egg-bg" alt="">
+
+    <!-- 왼쪽 위 sideeye — 클릭 시 시점 선택 복귀 -->
+    <a href="#" class="sideeye-link" id="back-to-stages" data-tooltip="시점 다시 고르기">
+      <img src="images/sideeye.png" class="sideeye" alt="">
+    </a>
+
+    <div class="case-header">우여곡절 탈출 방법 곁눈질</div>
+
+    <!-- 왼쪽 단계 인덱스: 현재 시점 빼고 나머지 4개 -->
+    <div class="stage-nav" id="stage-nav"></div>
+
+    <!-- 왼쪽 텍스트박스 (해결 — 짧음) -->
+    <div class="case-box case-box-left">
+      <div class="case-box-content" id="case-solution"></div>
+    </div>
+
+    <!-- 가운데 -->
+    <div class="case-center">
+      <div class="case-subtitle" id="case-name">가명 / 이름</div>
+      <img id="case-stage-img" src="images/stage_01.png" class="case-main-img" alt="" data-tooltip="계속 곁눈질하기">
+      <div class="case-stage-label">
+        <span id="case-stage-num">stage 01</span>
+        <span id="case-stage-name">초반 아이디어 단계</span>
+      </div>
+    </div>
+
+    <!-- 오른쪽 텍스트박스 (우여곡절 — 김) -->
+    <div class="case-box case-box-right">
+      <div class="case-box-content" id="case-story"></div>
+    </div>
+
+    <!-- 오른쪽 아래 홈 알 -->
+    <a href="index.html" class="home-egg" data-tooltip="Back to Home">
+      <img src="images/landingpage_button.png" alt="">
+    </a>
+
+  </section>
+
+</div>
+
+
+<script src="sheet.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
