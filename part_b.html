@@ -6,361 +6,105 @@
 <title>우여곡절 아카이브 — Part B</title>
 <link rel="stylesheet" href="style.css">
 <style>
-html, body { margin:0; padding:0; background:#fff; }
-* { cursor:none !important; box-sizing:border-box; }
+/* ─────────────────────────────────────────
+   기본 레이아웃 수정
+   ───────────────────────────────────────── */
+html, body { margin: 0; padding: 0; background: #fff; cursor: none !important; }
+* { cursor: none !important; box-sizing: border-box; }
 
 body.part-b-body {
-  width: 100%;
-  min-height: 100vh;
-  overflow-x: hidden;
-  overflow-y: auto;
+  width: 100%; min-height: 100vh;
+  overflow-x: hidden; overflow-y: auto;
   background: #FFFFFF;
-  display: block;
-  padding-bottom: 340px;
+  padding-bottom: 400px; /* 하단 무더기 공간 확보 */
 }
 
-.part-b-bg-fixed {
-  position: fixed; top: -100px; left: 50%;
-  transform: translateX(-50%);
-  width: 2574px; height: auto;
-  pointer-events: none; z-index: 0; opacity: 0.22;
-}
-
-.part-b-home {
-  position: fixed; top: 30px; left: 30px;
-  width: 160px; height: 107px; z-index: 100; display: block;
-}
-.part-b-home img { width:100%; height:100%; object-fit:contain; transition:transform 0.3s; }
-.part-b-home:hover img { transform:scale(1.05); }
-
-#b-loading {
-  position: fixed; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'OnulGongHanChe', serif; font-size: 18px; color: #aaa;
-  z-index: 200; background: #fff; transition: opacity 0.5s;
-}
-
-/* ══════════════════════════════════════
-   영수증: 텍스처를 세로로 반복 = 하나의 긴 종이
-   콘텐츠는 종이 안정 영역(중앙 ~50% 폭) 안에만
-══════════════════════════════════════ */
+/* ── 영수증 종이 크기 및 정렬 ── */
 .receipt-col {
   position: relative;
-  /* 텍스처 가운데 종이 폭(423px) 보다 살짝 크게 표시 */
-  width: 720px;
-  margin: 40px auto 0;
+  width: 900px; /* 영수증 크기 키움 */
+  margin: 100px auto 0;
   z-index: 5;
 }
 
-/* 텍스처 레이어 — 여러 장 이어붙임 */
-.receipt-textures {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-}
-.receipt-textures img {
-  width: 100%;
-  height: auto;
-  display: block;
-  mix-blend-mode: multiply;
-  /* 이어붙일 때 첫 장 제외하고 위쪽 찢어진 부분 잘라냄 */
-  margin-top: -50px;
-}
-.receipt-textures img:first-child { margin-top: 0; }
+.receipt-paper { width: 100%; display: block; }
 
-/* 콘텐츠 — 텍스처 위에 */
 .receipt-content {
-  position: relative;
-  z-index: 2;
-  /* 좌우: 종이 안정 영역 안쪽 (텍스처 가운데 50%만 종이) */
-  /* 720px 폭 기준 좌우 비율 24% → 약 175px씩 */
-  padding: 80px 180px 80px;
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  padding: 80px 110px; /* 텍스트가 그래픽 안 넘어가게 여백 조절 */
+  display: flex; flex-direction: column; align-items: center;
 }
 
-/* 카드 */
-.receipt-entry {
-  position: relative;
-  padding-bottom: 36px;
-  margin-bottom: 36px;
-  border-bottom: 1.5px dashed rgba(0,0,0,0.18);
-}
-.receipt-entry:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
+/* ── 이미지 디테일 (노이즈 + Multiply) ── */
+.receipt-canvas {
+  width: 60%; /* 이미지 사이즈 줄임 */
+  height: auto;
+  mix-blend-mode: multiply; /* 흰색 날리고 종이 질감 비치게 */
+  filter: url(#heavyNoise) contrast(1.1); /* 강한 노이즈 */
+  margin-bottom: 20px;
+  pointer-events: none;
 }
 
-/* 인터뷰 이미지 */
-.receipt-img {
-  width: 100%; height: auto; display: block;
-  mix-blend-mode: multiply;
-  filter: contrast(1.1) brightness(0.85);
-  margin-bottom: 12px;
-}
-.receipt-img-placeholder {
-  width: 100%; height: 160px;
-  background: rgba(0,0,0,0.04);
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'OnulGongHanChe', serif;
-  font-size: 11px; color: rgba(0,0,0,0.2);
-  margin-bottom: 12px;
-}
+.receipt-info { width: 100%; font-family: 'OnulGongHanChe', serif; }
+.r-line { display: flex; justify-content: space-between; border-bottom: 1px dashed #ccc; padding: 10px 0; font-size: 20px; }
+.r-story { margin-top: 25px; font-size: 18px; line-height: 1.6; text-align: justify; word-break: break-all; }
 
-.receipt-meta { text-align: right; margin-bottom: 12px; }
-.receipt-name {
-  font-family: 'OnulGongHanChe', serif;
-  font-weight: 700; font-size: 17px; line-height: 28px; color: #000;
+/* ── 하단 무더기 (화면 고정) ── */
+.part-b-pile {
+  position: fixed; /* 고정! */
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 100%; max-width: 1920px;
+  z-index: 80; pointer-events: none;
 }
-.receipt-work {
-  font-family: 'OnulGongHanChe', serif;
-  font-weight: 500; font-size: 12px; line-height: 18px; color: #666;
-}
-.receipt-image-label {
-  font-family: 'OnulGongHanChe', serif;
-  font-weight: 500; font-size: 11px; color: #bbb;
-}
+.part-b-pile img { width: 100%; display: block; }
 
-.receipt-stage-tag {
-  font-family: 'OnulGongHanChe', serif;
-  font-weight: 500; font-size: 11px; color: #aaa;
-  margin-bottom: 8px; letter-spacing: 0.04em;
-}
-
-.receipt-section-label {
-  font-family: 'OnulGongHanChe', serif;
-  font-weight: 700; font-size: 15px; line-height: 28px;
-  color: #000; margin-bottom: 4px;
-}
-
-.receipt-text {
-  font-family: 'OnulGongHanChe', serif;
-  font-weight: 500; font-size: 14px; line-height: 22px;
-  color: #000; word-break: keep-all; overflow-wrap: break-word;
-}
-
-.receipt-solution-wrap { margin-top: 14px; }
-.receipt-solution-label {
-  font-family: 'OnulGongHanChe', serif;
-  font-weight: 700; font-size: 12px; line-height: 24px; color: #777;
-}
-.receipt-solution-text {
-  font-family: 'OnulGongHanChe', serif;
-  font-weight: 500; font-size: 12px; line-height: 20px;
-  color: #555; word-break: keep-all; overflow-wrap: break-word;
-}
-
-/* PILE */
-.pile-fixed {
-  position: fixed; bottom: 0; left: 0;
-  width: 100vw; z-index: 10; pointer-events: none;
-}
-.pile-fixed img {
-  width: 100%; height: auto; display: block;
-  mix-blend-mode: normal;
-  opacity: 1;
-  max-height: 320px; object-fit: cover; object-position: bottom;
-}
-
-/* 커서 */
-#cursor {
-  position: fixed; width: 52px; height: auto;
-  pointer-events: none; z-index: 9999;
-  transform: translate(-50%, -88%);
-  user-select: none; opacity: 0; transition: opacity 0.15s;
-}
-#trail-layer { position: fixed; inset: 0; pointer-events: none; z-index: 80; overflow: hidden; }
-.trail-img { position: fixed; pointer-events: none; opacity: 0; transition: opacity 0.15s ease; }
-#quote-bubble {
-  position: fixed; pointer-events: none; z-index: 90;
-  opacity: 0; transition: opacity 0.4s ease; max-width: 340px;
-}
-.quote-text { font-family: 'OnulGongHanChe', serif; font-weight: 500; font-size: 18px; line-height: 1.7; color: #000; word-break: keep-all; }
-.quote-attr { font-family: 'OnulGongHanChe', serif; font-weight: 300; font-size: 13px; color: #666; margin-top: 8px; }
+.part-b-home { position: fixed; top: 30px; left: 30px; z-index: 100; width: 150px; }
 </style>
 </head>
 <body class="part-b-body">
 
-<div id="b-loading">불러오는 중…</div>
+  <svg style="position: absolute; width: 0; height: 0;">
+    <filter id="heavyNoise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0, 0 0 0 0 0, 0 0 0 0 0, 0 0 0 -1.5 1.5" />
+    </filter>
+  </svg>
 
-<img id="cursor" src="images/custom_cursor.png" alt="">
-<div id="trail-layer"></div>
-<div id="quote-bubble">
-  <div class="quote-text" id="quote-text"></div>
-  <div class="quote-attr" id="quote-attr"></div>
-</div>
+  <img src="images/egg_background.png" style="position:fixed; top:-100px; left:50%; transform:translateX(-50%); width:2500px; opacity:0.15; z-index:0;">
 
-<img src="images/egg_background.png" class="part-b-bg-fixed" alt="">
-<a href="index.html" class="part-b-home">
-  <img src="images/landingpage_button.png" alt="">
-</a>
+  <div id="receipt-list">
+    </div>
 
-<div class="receipt-col" id="receipt-col">
-  <!-- 텍스처 레이어 (JS가 콘텐츠 높이에 맞춰 갯수 채움) -->
-  <div class="receipt-textures" id="receipt-textures"></div>
-  <!-- 콘텐츠 레이어 -->
-  <div class="receipt-content" id="receipt-content"></div>
-</div>
+  <div class="part-b-pile">
+    <img src="images/part_b_pile.png">
+  </div>
 
-<!-- 영수증 하단 pile 경계 마스크 -->
-<div class="receipt-pile-mask"></div>
+  <a href="index.html" class="part-b-home"><img src="images/landingpage_button.png"></a>
 
-<div class="pile-fixed">
-  <img src="images/pile.png" alt="">
-</div>
+  <img id="cursor" src="images/custom_cursor.png" style="position:fixed; pointer-events:none; z-index:9999;">
+  <div id="trail-layer" style="position:fixed; inset:0; pointer-events:none; z-index:999;"></div>
 
-<script src="sheet.js"></script>
-
-<script>
-function renderReceipt(data) {
-  const content = document.getElementById('receipt-content');
-  const textures = document.getElementById('receipt-textures');
-
-  if (!data || !data.length) {
-    content.innerHTML = '<div style="padding:40px;color:#aaa;font-family:OnulGongHanChe,serif">데이터를 불러올 수 없습니다.</div>';
-    return;
-  }
-
-  // 콘텐츠 렌더
-  let html = '';
-  data.forEach((d, i) => {
-    const num = String(i+1).padStart(2,'0');
-    // 로컬 이미지 매핑
-    const LOCAL_IMGS = {
-      '진원':             'images/interview_jinwon.png',
-      '닐':               'images/interview_nil.png',
-      '토토':             'images/interview_toto.png',
-      '소녀시대언니들도와줘': 'images/interview_sideeye_1.png',
-      '조훈규':           'images/interview_hh.png',
+  <script src="script.js"></script>
+  <script>
+    // 흰색 배경 제거 로직
+    window.removeWhite = function(img) {
+      const cvs = document.createElement('canvas');
+      cvs.className = 'receipt-canvas';
+      const ctx = cvs.getContext('2d');
+      cvs.width = img.naturalWidth;
+      cvs.height = img.naturalHeight;
+      ctx.drawImage(img, 0, 0);
+      const imgData = ctx.getImageData(0, 0, cvs.width, cvs.height);
+      const d = imgData.data;
+      for (let i = 0; i < d.length; i += 4) {
+        // 흰색(밝기 210 이상) 날리기
+        if (d[i] > 210 && d[i+1] > 210 && d[i+2] > 210) d[i+3] = 0;
+      }
+      ctx.putImageData(imgData, 0, 0);
+      img.parentNode.replaceChild(cvs, img);
     };
-    const imgSrc = d.imageUrl || LOCAL_IMGS[d.name] || null;
-    // 이미지 있을 때만 표시, 없으면 생략
-    const imgBlock = imgSrc
-      ? `<img src="${imgSrc}" class="receipt-img" alt="${d.name}">`
-      : '';
-    const sol = d.solution
-      ? `<div class="receipt-solution-wrap">
-          <div class="receipt-solution-label">우여곡절을 지나간 방법</div>
-          <div class="receipt-solution-text">${d.solution}</div>
-         </div>` : '';
-    const stageLabel = STAGE_NAMES[d.stage] || d.stageWhen || '';
-    html += `
-      <div class="receipt-entry">
-        ${imgBlock}
-        <div class="receipt-meta">
-          <div class="receipt-name">${d.name}</div>
-          <div class="receipt-work">${d.work}</div>
-          <div class="receipt-image-label">image ${num}</div>
-        </div>
-        <div class="receipt-stage-tag">stage ${d.stage} · ${stageLabel}</div>
-        <div class="receipt-section-label">우여곡절</div>
-        <div class="receipt-text">${d.story.replace(/\n/g,'<br>')}</div>
-        ${sol}
-      </div>`;
-  });
-  content.innerHTML = html;
-
-  // 텍스처 갯수: 콘텐츠 높이에 따라 채움
-  requestAnimationFrame(() => {
-    const contentHeight = content.offsetHeight;
-    // 텍스처 한 장이 폭 720일 때 높이 = 720 * (1882/836) ≈ 1620px
-    const textureH = 720 * (1882/836);
-    // 첫 장 이후로는 -50px overlap이라 실효 높이 1570px
-    const effectiveH = textureH - 50;
-    const count = Math.max(1, Math.ceil((contentHeight - textureH) / effectiveH) + 1);
-
-    let texHtml = '';
-    for (let i = 0; i < count; i++) {
-      texHtml += '<img src="images/paper_texture.png" alt="">';
-    }
-    textures.innerHTML = texHtml;
-  });
-}
-
-(async () => {
-  const loading = document.getElementById('b-loading');
-  try {
-    const data = await fetchSheetData();
-    renderReceipt(data);
-  } catch(e) {
-    console.error('시트 로드 실패:', e);
-    renderReceipt([
-      { name:"진원", work:"졸업전시", stage:"04", stageWhen:"공개 이후",
-        story:"지혜를 상징하는 사랑니, '우리가 종종 어리석은 행동을 하는 것은 사랑니를 뽑아서 그런 게 아닌가?'라는 엉뚱한 가설을 바탕으로 진행된 시각화 프로젝트였습니다.",
-        solution:"" },
-      { name:"닐", work:"레드벨벳 디오라마", stage:"02", stageWhen:"제작 진행 중",
-        story:"우드락으로 집 모형을 만드는데 우드락 두께를 계산하지 않고 만들어서 세네번 다시 만들었던 기억이 있습니다.",
-        solution:"그냥 다시 만들면서 손과 머리가 더블로 고생했습니다." },
-      { name:"정현욱", work:"PYGMALION", stage:"01", stageWhen:"초반 아이디어 단계",
-        story:"콘티 제작 단계가 매우 오래 걸려 독서실 등에서 수 번 밤샘을 이어갔습니다.",
-        solution:"\"어떻게든 되겠지!\"라는 가벼운 마음을 가졌습니다." },
-    ]);
-  } finally {
-    loading.style.opacity = '0';
-    setTimeout(() => loading.remove(), 500);
-  }
-  // solution 텍스트로 드래그 quote 업데이트
-  if (data && data.length) {
-    const sentences = [];
-    data.forEach(d => {
-      if (!d.solution) return;
-      if (d.solution.length < 60) sentences.push({ text: d.solution.trim(), attr: d.name });
-      // 긴 건 앞 60자
-      else sentences.push({ text: d.solution.slice(0, 55).trim() + '…', attr: d.name });
-    });
-    if (sentences.length > 2) {
-      QUOTES.length = 0;
-      sentences.forEach(s => QUOTES.push(s));
-    }
-  }
-})();
-</script>
-
-<script>
-const cursor = document.getElementById('cursor');
-document.addEventListener('mousemove', e => {
-  cursor.style.left = e.clientX+'px'; cursor.style.top = e.clientY+'px';
-  cursor.style.opacity = '1';
-});
-document.addEventListener('mouseleave', ()=>cursor.style.opacity='0');
-document.addEventListener('mouseenter', ()=>cursor.style.opacity='1');
-
-const QUOTES=[{text:"어떻게든 되겠지!",attr:"정현욱"},{text:"즐기기도 하지만 이런 과정을 통해 작업세계가 단단해진다",attr:"비둘기"},{text:"죽어라 하는 수 밖에. 그래야 될 대로 된다",attr:"켠누님"},{text:"울면서 정신없이 밤을 새 책을 만들었다",attr:"토토"},{text:"녹음하면서 사과만 다섯개 먹었어요",attr:"고래"},{text:"끊질기게 인터넷을 뒤지고, 여러 실험을 하고, 다시 만들고",attr:"비둘기"},{text:"아 포기할까..그래도 시작한 거 끝까지 해야지",attr:"진원"}];
-const PERSONAS=['images/egg_persona_01.png','images/egg_persona_02.png','images/egg_persona_03.png','images/egg_persona_04.png','images/egg_persona_05.png','images/egg_persona_06.png','images/egg_persona_07.png'];
-const trailLayer=document.getElementById('trail-layer');
-const quoteBubble=document.getElementById('quote-bubble');
-const quoteText=document.getElementById('quote-text');
-const quoteAttr=document.getElementById('quote-attr');
-let isDown=false,didDrag=false,downX=0,downY=0,lastTX=0,lastTY=0,quoteTimer=null;
-document.querySelectorAll('a').forEach(a=>a.addEventListener('click',e=>{if(didDrag)e.preventDefault();}));
-document.addEventListener('mousedown',e=>{isDown=true;didDrag=false;downX=e.clientX;downY=e.clientY;lastTX=e.clientX;lastTY=e.clientY;});
-document.addEventListener('mouseup',e=>{
-  if(!isDown)return;isDown=false;if(!didDrag)return;
-  const q=QUOTES[Math.floor(Math.random()*QUOTES.length)];
-  quoteText.textContent='\u201c'+q.text+'\u201d';quoteAttr.textContent='— '+q.attr;
-  let qx=e.clientX+28,qy=e.clientY-30;
-  if(qx+340>window.innerWidth)qx=e.clientX-360;if(qy<30)qy=e.clientY+40;
-  quoteBubble.style.left=qx+'px';quoteBubble.style.top=qy+'px';quoteBubble.style.opacity='1';
-  if(quoteTimer)clearTimeout(quoteTimer);
-  quoteTimer=setTimeout(()=>quoteBubble.style.opacity='0',4500);
-});
-document.addEventListener('mousemove',e=>{
-  if(!isDown)return;
-  if(!didDrag&&Math.hypot(e.clientX-downX,e.clientY-downY)>30)didDrag=true;
-  if(!didDrag)return;
-  if(Math.hypot(e.clientX-lastTX,e.clientY-lastTY)<55)return;
-  lastTX=e.clientX;lastTY=e.clientY;
-  const img=document.createElement('img');
-  img.src=PERSONAS[Math.floor(Math.random()*PERSONAS.length)];
-  img.className='trail-img';
-  const sz=60+Math.random()*40,rot=(Math.random()-0.5)*18,flip=Math.random()>0.5?-1:1;
-  img.style.cssText=`left:${e.clientX}px;top:${e.clientY}px;height:${sz}px;width:auto;transform:translate(-50%,-55%) rotate(${rot}deg) scaleX(${flip});`;
-  trailLayer.appendChild(img);
-  requestAnimationFrame(()=>{
-    img.style.opacity='0.9';
-    setTimeout(()=>{img.style.transition='opacity 2.5s ease';img.style.opacity='0';setTimeout(()=>img.remove(),2600);},800);
-  });
-});
-</script>
+  </script>
 </body>
 </html>
